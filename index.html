@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>iOS 26 UI Mockup</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'San Francisco', 'Segoe UI', Arial, sans-serif;
+    }
+    .phone {
+      width: 360px;
+      height: 720px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 48px;
+      margin: 40px auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      position: relative;
+      overflow: hidden;
+      border: 4px solid #e0e5ec;
+      backdrop-filter: blur(6px);
+    }
+    .dynamic-island {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 34px;
+      min-width: 110px;
+      min-height: 34px;
+      background: #222;
+      border-radius: 22px;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.18);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: width 0.3s, height 0.3s;
+      overflow: hidden;
+    }
+    .dynamic-island-content {
+      color: #fff;
+      font-size: 1.08rem;
+      font-weight: 500;
+      white-space: nowrap;
+      opacity: 0.92;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .status-bar {
+      height: 32px;
+      background: transparent;
+      color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 150;
+    }
+    .home-screen {
+      padding: 40px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: calc(100% - 32px);
+      box-sizing: border-box;
+    }
+    .apps {
+      display: grid;
+      grid-template-columns: repeat(4, 60px);
+      gap: 22px;
+      margin-top: 48px;
+      margin-bottom: 48px;
+    }
+    .app {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #007aff;
+      font-size: 28px;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(195,207,226,0.25);
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      border: 2px solid #f5f7fa;
+    }
+    .app:hover {
+      background: linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 100%);
+      box-shadow: 0 4px 16px rgba(0,122,255,0.10);
+    }
+    .app span {
+      font-size: 12px;
+      margin-top: 4px;
+      color: #222;
+      font-weight: 500;
+    }
+    .home-indicator {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 6px;
+      background: #d1d5db;
+      border-radius: 3px;
+      opacity: 0.85;
+      z-index: 10;
+      transition: background 0.2s;
+    }
+    .home-indicator.active {
+      background: #007aff;
+      opacity: 1;
+    }
+    .gesture-toast {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #007aff;
+      color: #fff;
+      padding: 8px 24px;
+      border-radius: 20px;
+      opacity: 0.95;
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 10;
+      display: none;
+      box-shadow: 0 2px 8px rgba(0,122,255,0.18);
+    }
+    .calculator-popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .app-popup {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.18);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .app-popup.show {
+      display: flex;
+      background: rgba(0,0,0,0.18);
+    }
+    .app-popup.hide {
+      display: flex;
+      background: rgba(0,0,0,0.0);
+    }
+    .app-popup-content {
+      width: 100%;
+      min-height: 100%;
+      max-width: 100%;
+      border-radius: 0 0 0 0;
+      box-shadow: none;
+      animation: slideInApp 0.35s cubic-bezier(.4,1.4,.6,1) forwards;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 60px; /* ปรับให้ทุกแอปลงมาเท่ากัน ไม่ทับ Dynamic Island/Status bar */
+    }
+    .calculator {
+      padding: 32px 18px 18px 18px;
+      border-radius: 0;
+      width: 100%;
+      max-width: 100%;
+      min-height: 100%;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      /* ลบ padding-top ออก ใช้จาก .app-popup-content แทน */
+      padding-top: 0;
+    }
+    .clock-app {
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      /* ลบ padding-top ออก ใช้จาก .app-popup-content แทน */
+      padding-top: 0;
+    }
+    .music-app {
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      /* ลบ padding-top ออก ใช้จาก .app-popup-content แทน */
+      padding-top: 0;
+    }
+    .generic-app {
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      /* ลบ padding-top ออก ใช้จาก .app-popup-content แทน */
+      padding-top: 0;
+    }
+    @keyframes slideInApp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    @keyframes slideOutApp {
+      from { transform: translateY(0); }
+      to   { transform: translateY(100%); }
+    }
+    .calculator {
+      padding: 32px 18px 18px 18px;
+      border-radius: 0;
+      width: 100%;
+      max-width: 100%;
+      min-height: 100%;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .calc-display {
+      font-size: 2.4rem;
+      min-height: 56px;
+      margin-bottom: 28px;
+      background: #f5f7fa;
+      border-radius: 16px;
+      width: 100%;
+      text-align: right;
+      padding: 16px 14px;
+      color: #222;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .calc-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 64px);
+      gap: 16px 12px;
+      justify-content: center;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .calc-btn {
+      font-size: 1.3rem;
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 50%;
+      background: #fff;
+      color: #222;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-weight: 500;
+      outline: none;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .calc-btn.op {
+      background: #e6f0fa;
+      color: #007aff;
+      font-weight: 700;
+    }
+    .calc-btn.eq {
+      background: #007aff;
+      color: #fff;
+      grid-column: span 2;
+      border-radius: 28px;
+      width: 120px;
+      height: 56px;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .calc-btn.close {
+      background: #f87171;
+      color: #fff;
+      grid-column: span 2;
+      border-radius: 28px;
+      width: 120px;
+      height: 56px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .calc-btn#calcClear {
+      background: #ffe6e6;
+      color: #e53935;
+      font-weight: 700;
+    }
+    .calc-btn:active {
+      background: #e0e5ec;
+      color: #007aff;
+    }
+    .settings-popup {
+      /* ใช้ .app-popup อยู่แล้ว */
+    }
+    .settings {
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0;
+    }
+    .settings-header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 32px 24px 18px 24px;
+      border-bottom: 1px solid #e0e5ec;
+      color: #222;
+      text-align: left;
+    }
+    .settings-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0 0 16px 0;
+    }
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid #e0e5ec;
+      font-size: 1.1rem;
+      color: #222;
+      background: #fff;
+    }
+    .settings-item.about {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      color: #888;
+      font-size: 1rem;
+      background: #f5f7fa;
+    }
+    .about-detail {
+      font-size: 0.98rem;
+      color: #555;
+      margin-top: 2px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #e0e5ec;
+      border-radius: 24px;
+      transition: .3s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: .3s;
+    }
+    .switch input:checked + .slider {
+      background: #007aff;
+    }
+    .switch input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    .settings-close {
+      margin: 24px auto 24px auto;
+      padding: 10px 36px;
+      font-size: 1.1rem;
+      background: #f87171;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(248,113,113,0.10);
+      transition: background 0.2s;
+      display: block;
+    }
+    .settings-close:active {
+      background: #ef4444;
+    }
+    .clock-popup {
+      /* ใช้ .app-popup อยู่แล้ว */
+    }
+    .clock-app {
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      /* ลบ padding-top ออก ใช้จาก .app-popup-content แทน */
+      padding-top: 0;
+    }
+    .clock-header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      color: #222;
+    }
+    .clock-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .clock-tab {
+      padding: 6px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #007aff;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .clock-tab.inactive {
+      background: #e6f0fa;
+      color: #007aff;
+    }
+    .clock-digital {
+      font-size: 3.2rem;
+      font-family: 'Segoe UI Mono', 'SF Mono', monospace;
+      color: #007aff;
+      margin-bottom: 48px;
+      letter-spacing: 2px;
+      text-align: center;
+      width: 100%;
+    }
+    .stopwatch-time {
+      font-size: 2.6rem;
+      color: #007aff;
+      font-family: 'Segoe UI Mono', 'SF Mono', monospace;
+      margin-bottom: 24px;
+    }
+    .stopwatch-btns {
+      display: flex;
+      gap: 18px;
+    }
+    .clock-close {
+      margin: 0 auto 24px auto;
+      padding: 10px 36px;
+      font-size: 1.1rem;
+      background: #f87171;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(248,113,113,0.10);
+      transition: background 0.2s;
+      display: block;
+    }
+    .clock-close:active {
+      background: #ef4444;
+    }
+    .generic-popup {
+      /* ใช้ .app-popup อยู่แล้ว */
+    }
+    .generic-app {
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      /* ลบ padding-top ออก ใช้จาก .app-popup-content แทน */
+      padding-top: 0;
+    }
+    .generic-header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      color: #222;
+    }
+    .generic-content {
+      font-size: 1.2rem;
+      color: #888;
+      margin-bottom: 48px;
+      text-align: center;
+      width: 100%;
+    }
+    .generic-close {
+      margin: 0 auto 24px auto;
+      padding: 10px 36px;
+      font-size: 1.1rem;
+      background: #f87171;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(248,113,113,0.10);
+      transition: background 0.2s;
+      display: block;
+    }
+    .generic-close:active {
+      background: #ef4444;
+    }
+    .music-popup {
+      /* ใช้ .app-popup อยู่แล้ว */
+    }
+    .music-app {
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      /* ลบ padding-top ออก ใช้จาก .app-popup-content แทน */
+      padding-top: 0;
+    }
+    .music-header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #222;
+    }
+    .music-list {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .music-btn {
+      background: #e6f0fa;
+      color: #007aff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 28px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .music-btn:active {
+      background: #b6e0fe;
+    }
+    .music-player-wrap {
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto 24px auto;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .music-close {
+      margin: 0 auto 24px auto;
+      padding: 10px 36px;
+      font-size: 1.1rem;
+      background: #f87171;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(248,113,113,0.10);
+      transition: background 0.2s;
+      display: block;
+    }
+    .music-close:active {
+      background: #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone" id="phone">
+    <div class="dynamic-island" id="dynamicIsland">
+      <span class="dynamic-island-content" id="dynamicIslandContent"></span>
+    </div>
+    <div class="status-bar">
+      <span id="statusTime">12:00</span>
+      <span id="statusBattery">🔋 100%</span>
+    </div>
+    <div class="home-screen">
+      <div class="apps">
+        <div class="app"><span>📞</span><span>โทร</span></div>
+        <div class="app"><span>💬</span><span>ข้อความ</span></div>
+        <div class="app"><span>🌐</span><span>เบราว์เซอร์</span></div>
+        <div class="app"><span>📷</span><span>กล้อง</span></div>
+        <div class="app"><span>🗂️</span><span>ไฟล์</span></div>
+        <div class="app"><span>🖼️</span><span>แกลเลอรี่</span></div>
+        <div class="app"><span>🎵</span><span>เพลง</span></div>
+        <div class="app"><span>⚙️</span><span>ตั้งค่า</span></div>
+        <div class="app" id="calculatorApp"><span>🧮</span><span>เครื่องคิดเลข</span></div>
+        <div class="app" id="clockApp"><span>⏰</span><span>นาฬิกา</span></div>
+      </div>
+    </div>
+    <div class="home-indicator" id="homeIndicator"></div>
+    <div class="gesture-toast" id="gestureToast"></div>
+    <!-- Calculator Popup -->
+    <div class="calculator-popup app-popup" id="calculatorPopup" style="display:none;">
+      <div class="calculator app-popup-content" style="padding-top:60px;">
+        <div class="calc-display" id="calcDisplay">0</div>
+        <div class="calc-buttons">
+          <button class="calc-btn" data-value="7">7</button>
+          <button class="calc-btn" data-value="8">8</button>
+          <button class="calc-btn" data-value="9">9</button>
+          <button class="calc-btn op" data-value="/">÷</button>
+          <button class="calc-btn" data-value="4">4</button>
+          <button class="calc-btn" data-value="5">5</button>
+          <button class="calc-btn" data-value="6">6</button>
+          <button class="calc-btn op" data-value="*">×</button>
+          <button class="calc-btn" data-value="1">1</button>
+          <button class="calc-btn" data-value="2">2</button>
+          <button class="calc-btn" data-value="3">3</button>
+          <button class="calc-btn op" data-value="-">−</button>
+          <button class="calc-btn" data-value="0">0</button>
+          <button class="calc-btn" data-value=".">.</button>
+          <button class="calc-btn" id="calcClear">C</button>
+          <button class="calc-btn op" data-value="+">+</button>
+          <button class="calc-btn eq" id="calcEquals">=</button>
+          <button class="calc-btn close" id="calcClose">ปิด</button>
+        </div>
+      </div>
+    </div>
+    <!-- Settings Popup -->
+    <div class="settings-popup app-popup" id="settingsPopup" style="display:none;">
+      <div class="settings app-popup-content" style="padding-top:60px;">
+        <div class="settings-header">ตั้งค่า</div>
+        <div class="settings-list">
+          <div class="settings-item">
+            <span>Wi-Fi</span>
+            <label class="switch">
+              <input type="checkbox" id="wifiToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-item">
+            <span>Bluetooth</span>
+            <label class="switch">
+              <input type="checkbox" id="btToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-item">
+            <span>โหมดมืด</span>
+            <label class="switch">
+              <input type="checkbox" id="darkToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-item about">
+            <span>เกี่ยวกับ</span>
+            <span class="about-detail">iOS 26 UI Mockup</span>
+            <span class="about-version" style="font-size:0.98rem;color:#007aff;font-weight:600;">เวอร์ชัน 1.0.0</span>
+          </div>
+        </div>
+        <button class="settings-close" id="settingsClose">ปิด</button>
+      </div>
+    </div>
+    <!-- Clock Popup -->
+    <div class="clock-popup app-popup" id="clockPopup" style="display:none;">
+      <div class="clock-app app-popup-content" style="padding-top:60px;">
+        <div class="clock-header">นาฬิกา</div>
+        <div class="clock-tabs" style="display:flex;gap:12px;margin-bottom:24px;">
+          <button id="tabClock" class="clock-tab" style="padding:6px 18px;border:none;border-radius:8px;background:#007aff;color:#fff;font-weight:600;cursor:pointer;">นาฬิกา</button>
+          <button id="tabStopwatch" class="clock-tab" style="padding:6px 18px;border:none;border-radius:8px;background:#e6f0fa;color:#007aff;font-weight:600;cursor:pointer;">จับเวลา</button>
+        </div>
+        <div id="clockDigitalWrap">
+          <div class="clock-digital" id="clockDigital">00:00:00</div>
+        </div>
+        <div id="stopwatchWrap" style="display:none;flex-direction:column;align-items:center;width:100%;">
+          <div class="stopwatch-time" id="stopwatchTime" style="font-size:2.6rem;color:#007aff;font-family:'Segoe UI Mono','SF Mono',monospace;margin-bottom:24px;">00:00.00</div>
+          <div class="stopwatch-btns" style="display:flex;gap:18px;">
+            <button id="stopwatchStart" style="padding:8px 28px;font-size:1.1rem;background:#007aff;color:#fff;border:none;border-radius:12px;cursor:pointer;font-weight:600;">เริ่ม</button>
+            <button id="stopwatchReset" style="padding:8px 28px;font-size:1.1rem;background:#f3f4f6;color:#007aff;border:none;border-radius:12px;cursor:pointer;font-weight:600;">รีเซ็ต</button>
+          </div>
+        </div>
+        <button class="clock-close" id="clockClose">ปิด</button>
+      </div>
+    </div>
+    <!-- Generic App Popup -->
+    <div class="generic-popup app-popup" id="genericPopup" style="display:none;">
+      <div class="generic-app app-popup-content" style="padding-top:60px;">
+        <div class="generic-header" id="genericHeader">แอป</div>
+        <div class="generic-content" id="genericContent">กำลังพัฒนา...</div>
+        <button class="generic-close" id="genericClose">ปิด</button>
+      </div>
+    </div>
+    <!-- Music Popup -->
+    <div class="music-popup app-popup" id="musicPopup" style="display:none;">
+      <div class="music-app app-popup-content" style="padding-top:60px;width:100%;min-height:100%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;">
+        <div class="music-header" style="font-size:1.5rem;font-weight:700;margin-bottom:32px;color:#222;">เพลง</div>
+        <div class="music-list" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:18px;">
+          <button class="music-btn" id="music1Btn" style="padding:10px 36px;font-size:1.1rem;background:#007aff;color:#fff;border:none;border-radius:12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,122,255,0.10);transition:background 0.2s;">เพลงที่ 1</button>
+        </div>
+        <div class="music-player" id="musicPlayer" style="margin-top:32px;width:90%;max-width:320px;display:none;"></div>
+        <button class="music-close" id="musicClose" style="margin:24px auto 24px auto;padding:10px 36px;font-size:1.1rem;background:#f87171;color:#fff;border:none;border-radius:12px;cursor:pointer;box-shadow:0 2px 8px rgba(248,113,113,0.10);transition:background 0.2s;display:block;">ปิด</button>
+      </div>
+    </div>
+    <!-- Browser Popup -->
+    <div class="browser-popup app-popup" id="browserPopup" style="display:none;">
+      <div class="browser-app app-popup-content" style="padding-top:60px;">
+        <div class="browser-header" style="font-size:1.5rem;font-weight:700;margin-bottom:24px;color:#222;margin-top:32px;">เบราว์เซอร์</div>
+        <div class="browser-player-wrap" style="width:100%;max-width:340px;margin:0 auto 24px auto;background:#fff;border-radius:16px;overflow:hidden;min-height:320px;box-shadow:0 2px 8px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;">
+          <iframe id="browserIframe" src="https://www.google.com/" width="100%" height="420" style="border:none;border-radius:0 0 16px 16px;background:#fff;" allowfullscreen></iframe>
+        </div>
+        <button class="browser-close" id="browserClose" style="margin:0 auto 24px auto;padding:10px 36px;font-size:1.1rem;background:#f87171;color:#fff;border:none;border-radius:12px;cursor:pointer;box-shadow:0 2px 8px rgba(248,113,113,0.10);transition:background 0.2s;display:block;">ปิด</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const phone = document.getElementById('phone');
+    const toast = document.getElementById('gestureToast');
+    const homeIndicator = document.getElementById('homeIndicator');
+    let startX = 0, startY = 0, endX = 0, endY = 0;
+
+    phone.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    });
+
+    phone.addEventListener('touchend', function(e) {
+      endX = e.changedTouches[0].clientX;
+      endY = e.changedTouches[0].clientY;
+      handleGesture();
+    });
+
+    function handleGesture() {
+      const dx = endX - startX;
+      const dy = endY - startY;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+
+      // ปัดขึ้นจากขอบล่าง (Home)
+      if (absDy > 60 && absDy > absDx && dy < 0 && startY > 660) {
+        showToast('หน้าหลัก (Home)');
+        animateHomeIndicator();
+      }
+      // ปัดจากซ้ายไปขวา (Back)
+      else if (absDx > 60 && absDx > absDy && dx > 0 && startX < 40) {
+        showToast('ย้อนกลับ (Back)');
+      }
+      // ปัดจากขวาไปซ้าย (App Switcher)
+      else if (absDx > 60 && absDx > absDy && dx < 0 && startX > 320) {
+        showToast('สลับแอป (App Switcher)');
+      }
+    }
+
+    // Dynamic Island Toast (แสดงตลอดเวลา)
+    function showDynamicIsland(msg, duration=1800) {
+      const di = document.getElementById('dynamicIsland');
+      const dic = document.getElementById('dynamicIslandContent');
+      dic.textContent = msg;
+      di.style.width = msg ? '180px' : '110px';
+      di.style.height = msg ? '38px' : '34px';
+      dic.style.opacity = 1;
+      if (msg) {
+        setTimeout(() => {
+          dic.style.opacity = 0.92;
+          di.style.width = '110px';
+          di.style.height = '34px';
+          dic.textContent = '';
+        }, duration);
+      }
+    }
+    // เริ่มต้นให้ Dynamic Island ว่างเปล่าแต่โชว์ตลอด
+    document.addEventListener('DOMContentLoaded', function() {
+      showDynamicIsland('', 0);
+    });
+    // เปลี่ยน showToast ให้แสดงที่ Dynamic Island แทน
+    function showToast(msg) {
+      showDynamicIsland(msg, 1200);
+    }
+
+    function animateHomeIndicator() {
+      homeIndicator.classList.add('active');
+      setTimeout(() => {
+        homeIndicator.classList.remove('active');
+      }, 700);
+    }
+
+    // เพิ่ม event สำหรับเข้าแอป
+    document.querySelectorAll('.app').forEach(app => {
+      app.addEventListener('click', function() {
+        const appName = this.querySelectorAll('span')[1]?.textContent || 'แอป';
+        const now = new Date();
+        let lastKey = '';
+        if (appName === 'เครื่องคิดเลข') {
+          lastKey = 'lastOpen_calculator';
+        } else if (appName === 'ตั้งค่า') {
+          lastKey = 'lastOpen_settings';
+        } else if (appName === 'นาฬิกา') {
+          lastKey = 'lastOpen_clock';
+        } else if (appName === 'เพลง') {
+          lastKey = 'lastOpen_music';
+        } else {
+          lastKey = 'lastOpen_' + appName;
+        }
+        if (lastKey) {
+          const last = localStorage.getItem(lastKey);
+          if (last) {
+            showToast('เปิดล่าสุด: ' + last);
+          }
+          // save current time
+          const h = now.getHours().toString().padStart(2, '0');
+          const m = now.getMinutes().toString().padStart(2, '0');
+          const s = now.getSeconds().toString().padStart(2, '0');
+          localStorage.setItem(lastKey, `${h}:${m}:${s}`);
+        }
+        if (appName === 'เครื่องคิดเลข') {
+          const popup = document.getElementById('calculatorPopup');
+          popup.classList.remove('hide');
+          popup.classList.add('show');
+          popup.style.display = 'flex';
+        } else if (appName === 'ตั้งค่า') {
+          const popup = document.getElementById('settingsPopup');
+          popup.classList.remove('hide');
+          popup.classList.add('show');
+          popup.style.display = 'flex';
+        } else if (appName === 'นาฬิกา') {
+          const popup = document.getElementById('clockPopup');
+          popup.classList.remove('hide');
+          popup.classList.add('show');
+          popup.style.display = 'flex';
+        } else if (appName === 'เพลง') {
+          const popup = document.getElementById('musicPopup');
+          popup.classList.remove('hide');
+          popup.classList.add('show');
+          popup.style.display = 'flex';
+        } else if (appName === 'เบราว์เซอร์') {
+          const popup = document.getElementById('browserPopup');
+          popup.classList.remove('hide');
+          popup.classList.add('show');
+          popup.style.display = 'flex';
+        } else {
+          // generic popup
+          const popup = document.getElementById('genericPopup');
+          document.getElementById('genericHeader').textContent = appName;
+          document.getElementById('genericContent').textContent = 'กำลังพัฒนา...';
+          popup.classList.remove('hide');
+          popup.classList.add('show');
+          popup.style.display = 'flex';
+        }
+      });
+    });
+    // Music logic
+    const music1Btn = document.getElementById('music1Btn');
+    const musicPlayer = document.getElementById('musicPlayer');
+    let musicIframe = null;
+    music1Btn.onclick = function() {
+      if (!musicIframe) {
+        musicIframe = document.createElement('iframe');
+        musicIframe.width = '100%';
+        musicIframe.height = '180';
+        musicIframe.style.borderRadius = '16px';
+        musicIframe.style.border = 'none';
+        musicIframe.allow = 'autoplay; encrypted-media';
+        musicIframe.allowFullscreen = true;
+        musicIframe.src = 'https://www.youtube.com/embed/7e4ADkPbstU?si=ul4bAoKnpOx9HsJ7&autoplay=1';
+        musicPlayer.appendChild(musicIframe);
+      }
+      musicPlayer.style.display = 'block';
+    };
+    document.getElementById('musicClose').onclick = function() {
+      closeAppPopup('musicPopup');
+      if (musicIframe) {
+        musicPlayer.removeChild(musicIframe);
+        musicIframe = null;
+      }
+      musicPlayer.style.display = 'none';
+    };
+    document.getElementById('genericClose').onclick = function() {
+      closeAppPopup('genericPopup');
+    };
+    // Clock logic
+    function updateClockDigital() {
+      const now = new Date();
+      let h = now.getHours().toString().padStart(2, '0');
+      let m = now.getMinutes().toString().padStart(2, '0');
+      let s = now.getSeconds().toString().padStart(2, '0');
+      document.getElementById('clockDigital').textContent = `${h}:${m}:${s}`;
+    }
+    setInterval(updateClockDigital, 1000);
+    updateClockDigital();
+    document.getElementById('clockClose').onclick = function() {
+      closeAppPopup('clockPopup');
+    };
+    // Stopwatch logic
+    let stopwatchInterval = null;
+    let stopwatchStartTime = 0;
+    let stopwatchElapsed = 0;
+    let stopwatchRunning = false;
+    const stopwatchTime = document.getElementById('stopwatchTime');
+    const stopwatchStartBtn = document.getElementById('stopwatchStart');
+    const stopwatchResetBtn = document.getElementById('stopwatchReset');
+    function updateStopwatchDisplay() {
+      let ms = stopwatchElapsed;
+      if (stopwatchRunning) {
+        ms += Date.now() - stopwatchStartTime;
+      }
+      let min = Math.floor(ms / 60000);
+      let sec = Math.floor((ms % 60000) / 1000);
+      let cs = Math.floor((ms % 1000) / 10);
+      stopwatchTime.textContent = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}.${cs.toString().padStart(2,'0')}`;
+    }
+    stopwatchStartBtn.onclick = function() {
+      if (!stopwatchRunning) {
+        stopwatchRunning = true;
+        stopwatchStartTime = Date.now();
+        stopwatchStartBtn.textContent = 'หยุด';
+        stopwatchStartBtn.style.background = '#f87171';
+        stopwatchStartBtn.style.color = '#fff';
+        stopwatchInterval = setInterval(updateStopwatchDisplay, 33);
+      } else {
+        stopwatchRunning = false;
+        stopwatchElapsed += Date.now() - stopwatchStartTime;
+        stopwatchStartBtn.textContent = 'เริ่ม';
+        stopwatchStartBtn.style.background = '#007aff';
+        stopwatchStartBtn.style.color = '#fff';
+        clearInterval(stopwatchInterval);
+      }
+    };
+    stopwatchResetBtn.onclick = function() {
+      stopwatchRunning = false;
+      stopwatchElapsed = 0;
+      stopwatchStartBtn.textContent = 'เริ่ม';
+      stopwatchStartBtn.style.background = '#007aff';
+      stopwatchStartBtn.style.color = '#fff';
+      clearInterval(stopwatchInterval);
+      updateStopwatchDisplay();
+    };
+    // Tab switch logic
+    document.getElementById('tabClock').onclick = function() {
+      document.getElementById('clockDigitalWrap').style.display = '';
+      document.getElementById('stopwatchWrap').style.display = 'none';
+      this.style.background = '#007aff';
+      this.style.color = '#fff';
+      document.getElementById('tabStopwatch').style.background = '#e6f0fa';
+      document.getElementById('tabStopwatch').style.color = '#007aff';
+    };
+    document.getElementById('tabStopwatch').onclick = function() {
+      document.getElementById('clockDigitalWrap').style.display = 'none';
+      document.getElementById('stopwatchWrap').style.display = 'flex';
+      this.style.background = '#007aff';
+      this.style.color = '#fff';
+      document.getElementById('tabClock').style.background = '#e6f0fa';
+      document.getElementById('tabClock').style.color = '#007aff';
+    };
+    // Reset stopwatch on close
+    document.getElementById('clockClose').addEventListener('click', function() {
+      stopwatchRunning = false;
+      stopwatchElapsed = 0;
+      stopwatchStartBtn.textContent = 'เริ่ม';
+      stopwatchStartBtn.style.background = '#007aff';
+      stopwatchStartBtn.style.color = '#fff';
+      clearInterval(stopwatchInterval);
+      updateStopwatchDisplay();
+      document.getElementById('clockDigitalWrap').style.display = '';
+      document.getElementById('stopwatchWrap').style.display = 'none';
+      document.getElementById('tabClock').style.background = '#007aff';
+      document.getElementById('tabClock').style.color = '#fff';
+      document.getElementById('tabStopwatch').style.background = '#e6f0fa';
+      document.getElementById('tabStopwatch').style.color = '#007aff';
+    });
+    // ฟังก์ชันปิด popup พร้อมอนิเมชัน
+    function closeAppPopup(popupId) {
+      const popup = document.getElementById(popupId);
+      popup.classList.remove('show');
+      popup.classList.add('hide');
+      setTimeout(() => {
+        popup.style.display = 'none';
+        popup.classList.remove('hide');
+      }, 300);
+    }
+    document.getElementById('settingsClose').onclick = function() {
+      closeAppPopup('settingsPopup');
+    };
+
+    // Calculator logic
+    const calcDisplay = document.getElementById('calcDisplay');
+    let calcValue = '';
+    let calcResultShown = false;
+    document.querySelectorAll('.calc-btn[data-value]').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (calcResultShown) {
+          calcValue = '';
+          calcResultShown = false;
+        }
+        const val = this.getAttribute('data-value');
+        if (val === '.' && calcValue.split(/[-+*/]/).pop().includes('.')) return;
+        calcValue += val;
+        calcDisplay.textContent = calcValue;
+      });
+    });
+    document.getElementById('calcClear').onclick = function() {
+      calcValue = '';
+      calcDisplay.textContent = '0';
+    };
+    document.getElementById('calcEquals').onclick = function() {
+      try {
+        let result = eval(calcValue.replace(/÷/g, '/').replace(/×/g, '*'));
+        if (result === undefined || isNaN(result)) result = 0;
+        calcDisplay.textContent = result;
+        calcValue = result.toString();
+        calcResultShown = true;
+      } catch {
+        calcDisplay.textContent = 'Error';
+        calcValue = '';
+        calcResultShown = true;
+      }
+    };
+    document.getElementById('calcClose').onclick = function() {
+      closeAppPopup('calculatorPopup');
+      calcValue = '';
+      calcDisplay.textContent = '0';
+    };
+
+    // Browser logic
+    const browserClose = document.getElementById('browserClose');
+    browserClose.onclick = function() {
+      closeAppPopup('browserPopup');
+      // รีเซ็ต iframe (โหลดใหม่)
+      document.getElementById('browserIframe').src = 'about:blank';
+      setTimeout(()=>{
+        document.getElementById('browserIframe').src = 'https://www.google.com/';
+      }, 200);
+    };
+    // ออกจากแอป (ปิด popup) ด้วยการปัดขึ้นที่ home-indicator
+    const homeIndicatorEl = document.getElementById('homeIndicator');
+    let hiStartY = 0, hiEndY = 0;
+    homeIndicatorEl.addEventListener('touchstart', function(e) {
+      hiStartY = e.touches[0].clientY;
+    });
+    homeIndicatorEl.addEventListener('touchend', function(e) {
+      hiEndY = e.changedTouches[0].clientY;
+      if (
+        document.getElementById('calculatorPopup').style.display === 'flex' &&
+        hiStartY - hiEndY > 40 // ปัดขึ้น
+      ) {
+        closeAppPopup('calculatorPopup');
+        calcValue = '';
+        calcDisplay.textContent = '0';
+      } else if (
+        document.getElementById('settingsPopup').style.display === 'flex' &&
+        hiStartY - hiEndY > 40
+      ) {
+        closeAppPopup('settingsPopup');
+      } else if (
+        document.getElementById('clockPopup').style.display === 'flex' &&
+        hiStartY - hiEndY > 40
+      ) {
+        closeAppPopup('clockPopup');
+      } else if (
+        document.getElementById('musicPopup').style.display === 'flex' &&
+        hiStartY - hiEndY > 40
+      ) {
+        closeAppPopup('musicPopup');
+        if (musicIframe) {
+          musicPlayer.removeChild(musicIframe);
+          musicIframe = null;
+        }
+        musicPlayer.style.display = 'none';
+      } else if (
+        document.getElementById('genericPopup').style.display === 'flex' &&
+        hiStartY - hiEndY > 40
+      ) {
+        closeAppPopup('genericPopup');
+      } else if (
+        document.getElementById('browserPopup').style.display === 'flex' &&
+        hiStartY - hiEndY > 40
+      ) {
+        closeAppPopup('browserPopup');
+        document.getElementById('browserIframe').src = 'about:blank';
+        setTimeout(()=>{
+          document.getElementById('browserIframe').src = 'https://www.google.com/';
+        }, 200);
+      }
+    });
+    // รองรับ mouse (desktop)
+    let hiMouseStartY = 0, hiMouseEndY = 0, hiMouseDown = false;
+    homeIndicatorEl.addEventListener('mousedown', function(e) {
+      hiMouseDown = true;
+      hiMouseStartY = e.clientY;
+    });
+    document.addEventListener('mouseup', function(e) {
+      if (!hiMouseDown) return;
+      hiMouseDown = false;
+      hiMouseEndY = e.clientY;
+      if (
+        document.getElementById('calculatorPopup').style.display === 'flex' &&
+        hiMouseStartY - hiMouseEndY > 40
+      ) {
+        closeAppPopup('calculatorPopup');
+        calcValue = '';
+        calcDisplay.textContent = '0';
+      } else if (
+        document.getElementById('settingsPopup').style.display === 'flex' &&
+        hiMouseStartY - hiMouseEndY > 40
+      ) {
+        closeAppPopup('settingsPopup');
+      } else if (
+        document.getElementById('clockPopup').style.display === 'flex' &&
+        hiMouseStartY - hiMouseEndY > 40
+      ) {
+        closeAppPopup('clockPopup');
+      } else if (
+        document.getElementById('musicPopup').style.display === 'flex' &&
+        hiMouseStartY - hiMouseEndY > 40
+      ) {
+        closeAppPopup('musicPopup');
+        if (musicIframe) {
+          musicPlayer.removeChild(musicIframe);
+          musicIframe = null;
+        }
+        musicPlayer.style.display = 'none';
+      } else if (
+        document.getElementById('genericPopup').style.display === 'flex' &&
+        hiMouseStartY - hiMouseEndY > 40
+      ) {
+        closeAppPopup('genericPopup');
+      } else if (
+        document.getElementById('browserPopup').style.display === 'flex' &&
+        hiMouseStartY - hiMouseEndY > 40
+      ) {
+        closeAppPopup('browserPopup');
+        document.getElementById('browserIframe').src = 'about:blank';
+        setTimeout(()=>{
+          document.getElementById('browserIframe').src = 'https://www.google.com/';
+        }, 200);
+      }
+    });
+
+    // อัปเดตเวลาใน status bar
+    function updateStatusTime() {
+      const now = new Date();
+      let h = now.getHours();
+      let m = now.getMinutes();
+      if (h < 10) h = '0' + h;
+      if (m < 10) m = '0' + m;
+      document.getElementById('statusTime').textContent = `${h}:${m}`;
+    }
+    updateStatusTime();
+    setInterval(updateStatusTime, 1000 * 10); // อัปเดตทุก 10 วินาที
+
+    // อัปเดตแบตเตอรี่ใน status bar
+    function updateStatusBattery(level, charging) {
+      const percent = Math.round(level * 100);
+      let icon = '🔋';
+      if (charging) icon = '⚡';
+      document.getElementById('statusBattery').textContent = `${icon} ${percent}%`;
+    }
+    if (navigator.getBattery) {
+      navigator.getBattery().then(function(battery) {
+        updateStatusBattery(battery.level, battery.charging);
+        battery.addEventListener('levelchange', function() {
+          updateStatusBattery(battery.level, battery.charging);
+        });
+        battery.addEventListener('chargingchange', function() {
+          updateStatusBattery(battery.level, battery.charging);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
